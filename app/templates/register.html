@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<form action="{{ request.path }}" method="POST">
+    <label for="username">Username
+        <input type="text" name="username" id="username" placeholder="Choose a username...">
+    </label>
+    <label for="password">Password
+        <input type="password" name="password" id="password" placeholder="Set a secure password...">
+    </label>
+    <label for="email">Email
+        <input type="text" name="email" id="email" placeholder="Provide a valid email...">
+    </label>
+    <button type="submit">Register</button><button type="reset">Reset</button>
+</form>
+{% endblock %}

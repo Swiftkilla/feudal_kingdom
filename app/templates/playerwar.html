@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h1>Hi, {{ user.username }}!</h1>
+
+    <p>{{  wars.total }}</p>
+    {% if wars.total > wars.per_page %}
+    {% if next_url %}
+    <a class="button" href="{{ next_url }}">Last 20</a>
+    {% endif %}
+    {% if prev_url %}
+    <a class="button" href="{{ prev_url }}">Next 20</a>
+    {% endif %}
+    {% endif %}
+    {% for war in wars.items %}
+        <div><h3>{{ war.regionida }} vs. {{ war.regionidd }}</h3></div><div id="progressbar"></div>
+    {% endfor %}
+    <script>
+    $(function(){
+        $( "#progressbar" ).progressbar({
+        value: false
+        });
+    });
+    </script>
+{% endblock %}

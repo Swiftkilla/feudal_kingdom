@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Hello, {{ current_user.username }}</h1>
+    <hr>
+    {% if not new %}
+    {% for post in posts %}
+    <h2>{{ post.title }}</h2>
+    <p>
+    {{ post.username }} <b>{{ post.content }}</b>
+    </p>
+    {% endfor %}
+    {% endif %}
+    {% if new == True %}
+    <p>Create a new article</p>
+    {% endif %}
+{% endblock %}

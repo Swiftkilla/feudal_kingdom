@@ -1,0 +1,28 @@
+<html>
+    <head>
+
+      {% if title %}
+      <title>{{ title }} - Feudal Kingdoms</title>
+      {% else %}
+      {% endif %}
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+    </head>
+    <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <div class="content">
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='jquery-jvectormap-2.0.3.css') }}" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}" type="text/css" media="screen"/>
+    <script src="{{ url_for('static', filename='jquery-jvectormap-2.0.3.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='jvectormap.map.js') }}"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+    <body>
+
+        <div>Welcome to Feudal Kingdoms {{ current_user.username }}</div>
+        <hr>
+        {% block content %}{% endblock %}
+    </body>
+    </div>
+</html>

@@ -1,0 +1,272 @@
+{% extends "base.html" %}
+{% block content %}
+    <body>
+        <h3>
+            <a href = "{{ url_for('show_all') }}">Map</a>
+        </h3>
+        {%- for message in get_flashed_messages() %}
+                {{ message|safe }}
+        {%- endfor %}
+        <hr/>
+        <div id="side-menu">
+            <div style="vertical-align: top; display:table-row;" id="attack-buttons">
+                <span class="font">Show attack menu</span><i style="font-size:1.2em;vertical-align:top; margin-left:14px;" class="fas fa-angle-double-right"></i>
+                <i style="font-size:1.2em;vertical-align:top;margin-left:14px;" class="fas fa-angle-double-up hide"></i>
+            </div>
+
+            <div class="attack-menu">
+	        <form method="POST" action="/action/attack">
+                <p>
+		        <select class="select-menu-attack" name="regionA">
+			        <option>Select the offensive region...</option>
+			        {% for region in regions %}
+			        <option>{{ region.name }}</option>
+			        {% endfor %}
+		        </select>
+                </p>
+                <p>
+		        <select class="select-menu-attack" name="regionD">
+			        <option>Select the defending region...</option>
+                    {% for region in regions %}
+			        <option>{{ region.name }}</option>
+			        {% endfor %}
+		        </select>
+                </p>
+		        <input type="submit" value="Attack">
+	        </form>
+            </div>
+            <div style="vertical-align: top; display:table-row;" id="train-buttons">
+                Show skill menu
+                <i style="font-size:1.2em;vertical-align:top; margin-left:14px;" class="fas fa-angle-double-right"></i>
+                <i style="font-size:1.2em;vertical-align:top;margin-left:14px;" class="fas fa-angle-double-up hide"></i>
+            </div>
+            <div class="train-menu">
+                {% if tr != None %}
+                <p>Skill upgrade complete at:<br> <sup>{{ tr }}</sup></p>
+                {%  endif %}
+	        <form method="POST" action="{{ url_for('train') }}/intelligence">
+		        <input type="submit" value="Train Intelligence"> Level: {{ ua.intelligence }}
+	        </form>
+            <form method="POST" action="{{ url_for('train') }}/strength">
+		        <input type="submit" value="Train Strength"> Level: {{ ua.strength }}
+	        </form>
+            <form method="POST" action="{{ url_for('train') }}/endurance">
+		        <input type="submit" value="Train Endurance"> Level: {{ ua.endurance }}
+	        </form>
+            </div>
+            <div class="active-wars">
+            {% if wars != [] %}
+                <h3>Active Wars</h3>
+                {% for war in wars %}
+                    <h4>War Number: {{ war.id }}</h4>
+                    {% for city in ca %}
+                        {% if city.id == war.regionida %}
+                            <p>Attacker: {{ city.name }}<br>
+                        {% endif %}
+                    {% endfor %}
+                    {% for city in ca %}
+                        {%  if city.id == war.regionidd %}
+                            Defender: {{ city.name }}</p>
+                        {% endif %}
+                    {% endfor %}
+
+                {% endfor %}
+            {% endif %}
+            </div>
+        </div>
+
+
+<style>
+.jvectormap-region {
+    stroke: #800020;
+    stroke-width: 8;
+}
+#world-map-back {
+	position:absolute;
+}
+</style>
+
+<div id="world-map" style="height:70%;width:70%;">
+    <img id="world-map-back" src="https://wallpapercave.com/wp/RIt0TFT.jpg" style="height:70%;width:52%">
+</div>
+<p id="list" style="display:none;"></p>
+<script>
+
+$(function(){
+var coords = {};
+var markerIndex = 0;
+var point1 = 0;
+var point2 = 0;
+var distance = 0;
+var importantlist = [];
+$('.attack-menu').hide()
+$('.train-menu').hide()
+$('div#attack-buttons .fas').click(function(){
+    let buttons = $('#attack-buttons .fas');
+    $.each(buttons, function(i, v){
+        console.log()
+        if($(v).hasClass('hide')){
+            $(v).removeClass('hide')
+        }
+        else if(!$(v).hasClass('hide')){
+            $(v).addClass('hide')
+        }
+    });
+    $('div.attack-menu').slideToggle('slow')
+
+});
+$('div#train-buttons .fas').click(function(){
+    let buttons = $('#train-buttons .fas');
+    $.each(buttons, function(i, v){
+        console.log()
+        if($(v).hasClass('hide')){
+            $(v).removeClass('hide')
+        }
+        else if(!$(v).hasClass('hide')){
+            $(v).addClass('hide')
+        }
+    });
+    $('div.train-menu').slideToggle('slow')
+
+});
+$('.select-menu-attack').select2({
+  placeholder: 'Select a region'
+});
+	map = new jvm.Map({
+		map: 'map',
+		backgroundColor: 'transparent',
+		container: $('#world-map'),
+		markerStyle: {
+			initial: {
+				fill: '#FFFF00',
+				stroke: 'black',
+			},
+			hover: {
+				fill: '#243d51',
+				stroke: '#800020'
+			}
+		},
+		series: {
+			regions: [{
+			attribute: 'fill'
+			}],
+			markers: [{
+				attribute: 'image',
+				scale: {
+					'mrk': 'marker.png'
+				},
+				values: [],
+            }]
+		},
+		onMarkerTipShow: function(e, label, code){
+			
+		},
+		onRegionClick: function(e, code){
+			//map.prototype.addMarkerToRegion(code
+			clickedR = map.regions[code].element.shape.getBBox();
+			if(point1 === 0) {
+				point1 = [clickedR.x, clickedR.y];
+				console.log("POINT1", point1)
+			}
+			else if(point1 !== [clickedR.x, clickedR.y]){
+				point2 = [clickedR.x, clickedR.y]
+				console.log("POINT2", point2)
+			
+			if(point1 !== 0 && point2 !== 0){
+				distance = [Math.abs(point1[0]-point2[0]), Math.abs(point1[1]-point2[1])] 
+				console.log("DISTANCE", distance);
+				point1 = 0;
+				point2 = 0;
+			}}
+			console.log(getRegionCentroid(code))
+			
+		},
+        onMarkerClick: function(e, label) {
+            console.log(label)	
+        }
+	});
+	var getColour = function(key) {return coords[key]};
+	var colors =  { {% for region in regions %}
+					{% set colour = region.colour.replace('(','').replace(')','').split(',') %}
+					{% set colour = '#%02x%02x%02x' % (colour[:3][0]|int, colour[:3][1]|int, colour[:3][2]|int)  %}
+					{{ '"'|safe+region.name+'"'|safe }}:{{ '"'|safe+colour+'"'|safe }},
+					{% endfor %} }
+	map.series.regions[0].setValues( colors );
+	map.container.click(function(e){
+	var name = e.target.dataset.code;
+	rCentr = getRegionCentroid(name)
+	});
+	
+	getRegionCentroid = function(region){
+		if(typeof region == "string")
+			var region = map.regions[region];
+			var element = region.element;
+			var bbox = element.shape.getBBox(),
+			xcoord = (bbox.x + bbox.width/2),
+			ycoord = (bbox.y + bbox.height/2);
+		return [xcoord, ycoord];    
+	}
+	addMarkerToRegion = function(i){
+		var centroid = getRegionCentroid(i);
+		map.addMarker(i, {latLng: [centroid.lat, centroid.lng], name: i}, []);
+	}
+	//console.log(map)
+	var regions = map.regions;
+	for (region in regions) {
+		console.log(region, regions[region]);
+		var rname = regions[region].config.name;
+		if(region == "Selection"){console.log('test')}
+		markerIndex = rname
+		if(map.regions[rname] != "Selection"){
+		//map.addMarker(markerIndex, {coords: getRegionCentroid(name), name: name.split(' ')[0]+" Capital"});
+			map.addMarker(markerIndex, {coords: getRegionCentroid(map.regions[rname]), name: rname.split(' ')[0]+" Capital"})
+			importantlist.push((markerIndex, {coords: getRegionCentroid(map.regions[rname]), name: rname}))
+		}
+		else {
+			map.addMarker(markerIndex, {coords: getRegionCentroid(map.regions[rname].config.name), name: rname.split(' ')[0]+" Capital"})
+			importantlist.push(map.addMarker(markerIndex, {coords: getRegionCentroid(map.regions[rname].config.name), name: rname}))
+		}
+	}
+	/*$.each(importantlist, function(i,v){
+		$('#list').html($('#list').html() + "'"+v.name+"':["+v.coords+"],")
+	})*/
+	
+	
+})
+
+
+
+
+			
+  </script>
+<script>
+var countDownDate = new Date("Jan 5, 2019 15:37:25").getTime();
+
+// Update the count down every 1 second
+var x = setInterval(function() {
+
+    // Get todays date and time
+    var now = new Date().getTime();
+
+    // Find the distance between now and the count down date
+    var distance = countDownDate - now;
+
+    // Time calculations for days, hours, minutes and seconds
+    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    // Output the result in an element with id="demo"
+    document.getElementById("demo").innerHTML = days + "d " + hours + "h "
+    + minutes + "m " + seconds + "s ";
+
+    // If the count down is over, write some text
+    if (distance < 0) {
+        clearInterval(x);
+        document.getElementById("demo").innerHTML = "EXPIRED";
+    }
+}, 1000);
+</script> 
+   </body>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h1>Hi, {{ user.username }}!</h1>
+    <p>{{  regions.total }}</p>
+    {% if next_url %}
+    <a class="button" href="{{ next_url }}">Last 20</a>
+    {% endif %}
+    {% if prev_url %}
+    <a class="button" href="{{ prev_url }}">Next 20</a>
+    {% endif %}
+    {% for region in regions %}
+        <div><p><b>{{ region.name }}</b> - {{ region.id }}</p></div>
+    {% endfor %}
+{% endblock %}

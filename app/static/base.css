@@ -1,0 +1,72 @@
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent; /* make scrollbar transparent */
+}
+html {
+    padding-left: 12%;
+    padding-right: 12%;
+    background-color:grey;
+    font-family: 'Montserrat', sans-serif;
+    }
+.content {
+    font-family: 'Montserrat', sans-serif;
+}
+.font {
+    font-family: 'Montserrat', sans-serif;
+}
+body {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+a.button {
+    -webkit-appearance: button;
+    -moz-appearance: button;
+    appearance: button;
+    text-decoration: none;
+    color: initial;
+    padding: 15px;
+    background-color: #b3d335;
+    margin-right: 10px;
+    }
+.content {
+    width: 100%;
+    background-color: white;
+    padding-bottom:20px;
+    }
+div#world-map {
+    margin-left: auto;
+    margin-right: 5%;
+    }
+img#world-map-back {
+    margin-left: auto;
+    margin-right: 5%;
+    }
+.select-menu-attack {
+    width:300px!important;
+}
+.attack-menu, .train-menu {
+    position: relative;
+}
+#side-menu {
+    position:absolute;
+    margin-left: 20px;
+
+}
+#attack-buttons, #train-buttons {
+    font-size:120%;
+    margin-bottom: 12px;
+    margin-top: 10px;
+}
+.hide {
+    display: none;
+}
+#progressbar .ui-progressbar-value {
+    background-color: #ccc;
+  }
+
+#menu-ul {
+
+}
+.menu-li {
+    display: inline;
+}
